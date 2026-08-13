@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Spearhead Cards">
+<meta name="theme-color" content="#121211">
+<title>Spearhead Card Drawer v5</title>
+<style>
+:root { --bg:#121211; --panel:#1d1d1b; --gold:#7a6a2e; --gold2:#d4b24a; --text:#f5f1e7; --muted:#c9c2ad; --danger:#8d2e2a; --ok:#406f46; --line:#34322a; --shadow:rgba(0,0,0,.45); }
+* { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body { margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; }
+body { padding:max(10px,env(safe-area-inset-top)) 10px max(16px,env(safe-area-inset-bottom)); }
+.app { max-width:920px; margin:0 auto; }
+header,.panel { background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:0 12px 38px var(--shadow); }
+header { padding:16px; margin-bottom:12px; background:linear-gradient(180deg,#2b2a24,#191916); }
+h1 { margin:0 0 4px; font-size:clamp(24px,6vw,40px); letter-spacing:.03em; }
+.sub { color:var(--muted); font-size:14px; line-height:1.35; }
+.tabs { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+button { border:0; border-radius:14px; padding:13px 10px; font-size:16px; font-weight:850; color:var(--text); background:#333027; cursor:pointer; user-select:none; touch-action:manipulation; }
+button:active { transform:scale(.98); }
+button:disabled { opacity:.42; cursor:not-allowed; transform:none; }
+.tab.active,.primary { background:var(--gold); }
+.green { background:var(--ok); }
+.red { background:var(--danger); }
+.panel { padding:12px; }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px; }
+.stat { background:#111; border:1px solid #333025; border-radius:12px; padding:9px; text-align:center; }
+.stat b { display:block; font-size:22px; }
+.stat span { color:var(--muted); font-size:12px; }
+.controls { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:12px; }
+.drawn { display:flex; flex-direction:column; gap:16px; }
+.cardWrap { position:relative; width:100%; max-width:550px; margin:0 auto; background:#0c0c0b; border:1px solid #363225; border-radius:18px; padding:8px; box-shadow:0 12px 30px var(--shadow); cursor:pointer; transition:transform .12s ease, box-shadow .12s ease, outline-color .12s ease; touch-action:manipulation; }
+.cardWrap.selected { outline:5px solid var(--gold2); transform:scale(1.015); box-shadow:0 0 0 2px #000, 0 0 28px rgba(212,178,74,.65); }
+.cardWrap.selected::after { content:'SELECTED'; position:absolute; right:16px; top:16px; z-index:2; background:var(--gold2); color:#111; font-weight:950; font-size:13px; padding:6px 9px; border-radius:999px; box-shadow:0 4px 12px rgba(0,0,0,.45); }
+.cardImg { display:block; width:100%; border-radius:12px; background:#191917; }
+.empty { text-align:center; color:var(--muted); padding:24px 10px; border:1px dashed #4d4937; border-radius:14px; }
+.drawer { display:none; background:#111; border:1px solid #383326; border-radius:14px; padding:10px; margin-bottom:12px; }
+.drawer.open { display:block; }
+.drawer h2 { margin:0 0 8px; font-size:17px; }
+.discardList { display:flex; flex-wrap:wrap; gap:8px; }
+.discardItem { background:#2d2a22; border:1px solid #49412c; border-radius:999px; padding:7px 10px; color:#efe4bd; font-size:13px; font-weight:800; }
+.hint { color:var(--muted); font-size:12px; line-height:1.35; margin-top:10px; text-align:center; }
+@media (max-width:650px) { .controls { grid-template-columns:1fr 1fr; } .controls button:last-child { grid-column:1 / -1; } }
+@media (max-width:480px) { body { padding-left:7px; padding-right:7px; } header,.panel { border-radius:14px; } .controls { gap:7px; } button { font-size:15px; padding:12px 8px; } .cardWrap { padding:6px; border-radius:14px; } .cardImg { border-radius:9px; } }
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<h1>Spearhead Card Drawer v5</h1>
+<div class="sub">Tap cards to select them, discard only selected cards, then fill your hand back to three.</div>
+</header>
+<div class="tabs">
+<button id="tab1" class="tab active" type="button">Player 1</button>
+<button id="tab2" class="tab" type="button">Player 2</button>
+</div>
+<section class="panel">
+<div class="stats">
+<div class="stat"><b id="deckCount">0</b><span>Deck</span></div>
+<div class="stat"><b id="handCount">0</b><span>Hand</span></div>
+<div class="stat"><b id="discardCount">0</b><span>Discard</span></div>
+</div>
+<div class="controls">
+<button id="draw1" class="primary" type="button">Draw 1</button>
+<button id="fill3" class="primary" type="button">Fill Hand (3)</button>
+<button id="discardSelected" class="red" type="button">Discard Selected (0)</button>
+<button id="discardPile" type="button">Discard Pile</button>
+<button id="reset" class="green" type="button">Reset / Shuffle</button>
+</div>
+<div id="drawer" class="drawer"><h2>Discard pile</h2><div id="discardList" class="discardList"></div></div>
+<div id="hand" class="drawn"></div>
+<div id="empty" class="empty">No cards in hand. Tap <b>Fill Hand (3)</b> to draw your starting hand.</div>
+<div class="hint">v5 uses a clean JavaScript build with no inline syntax hacks. It is designed for local/offline use after extracting the ZIP.</div>
+</section>
+</div>
+<script>
+'use strict';
+const bundledCards = [{"title": "Take the Flanks", "src": "cards/01-take-the-flanks.png"}, {"title": "Take What's Theirs", "src": "cards/02-take-what-s-theirs.png"}, {"title": "Comb the Area", "src": "cards/03-comb-the-area.png"}, {"title": "Cut Off the Head", "src": "cards/04-cut-off-the-head.png"}, {"title": "Dais of the Comet", "src": "cards/05-dais-of-the-comet.png"}, {"title": "Dais of the Hammer", "src": "cards/06-dais-of-the-hammer.png"}, {"title": "Hold the Centre", "src": "cards/07-hold-the-centre.png"}, {"title": "Material Gains", "src": "cards/08-material-gains.png"}, {"title": "Protect the Loot", "src": "cards/09-protect-the-loot.png"}, {"title": "Raid", "src": "cards/10-raid.png"}, {"title": "Raze", "src": "cards/11-raze.png"}, {"title": "Pitiless Murder", "src": "cards/12-pitiless-murder.png"}];
+const storageKey = 'spearhead-card-app-v5';
+let activePlayer = 1;
+let discardOpen = false;
+
+function makeId() { return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2); }
+function cloneDeck() { return bundledCards.map(function(card) { return { title: card.title, src: card.src, id: makeId(), selected: false }; }); }
+function shuffle(input) {
+  const a = input.slice();
+  for (let i = a.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+function freshPlayer() { return { deck: shuffle(cloneDeck()), hand: [], discard: [] }; }
+function freshState() { return { players: { '1': freshPlayer(), '2': freshPlayer() } }; }
+function loadState() {
+  try {
+    const raw = localStorage.getItem(storageKey);
+    if (!raw) return freshState();
+    const parsed = JSON.parse(raw);
+    if (!parsed.players || !parsed.players['1'] || !parsed.players['2']) return freshState();
+    return parsed;
+  } catch (err) { return freshState(); }
+}
+let state = loadState();
+function saveState() { try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (err) {} }
+function currentPlayer() { return state.players[String(activePlayer)]; }
+function switchPlayer(n) { activePlayer = n; document.getElementById('tab1').classList.toggle('active', n === 1); document.getElementById('tab2').classList.toggle('active', n === 2); render(); }
+function drawCards(n) {
+  const p = currentPlayer();
+  const amount = Math.max(0, Math.min(n, p.deck.length));
+  for (let i = 0; i < amount; i += 1) { p.hand.push(p.deck.shift()); }
+  saveState(); render();
+}
+function fillHandToThree() {
+  const p = currentPlayer();
+  const missing = Math.max(0, 3 - p.hand.length);
+  if (missing > 0) drawCards(missing);
+  else render();
+}
+function discardSelectedCards() {
+  const p = currentPlayer();
+  const remaining = [];
+  p.hand.forEach(function(card) {
+    if (card.selected) { card.selected = false; p.discard.unshift(card); }
+    else { remaining.push(card); }
+  });
+  p.hand = remaining;
+  saveState(); render();
+}
+function resetDeck() {
+  const p = currentPlayer();
+  p.deck = shuffle(cloneDeck());
+  p.hand = [];
+  p.discard = [];
+  saveState(); render();
+}
+function toggleCard(cardId) {
+  const p = currentPlayer();
+  p.hand.forEach(function(card) { if (card.id === cardId) card.selected = !card.selected; });
+  saveState(); render();
+}
+function toggleDiscardPile() { discardOpen = !discardOpen; render(); }
+function render() {
+  const p = currentPlayer();
+  const selectedCount = p.hand.filter(function(card) { return card.selected; }).length;
+  document.getElementById('deckCount').textContent = p.deck.length;
+  document.getElementById('handCount').textContent = p.hand.length;
+  document.getElementById('discardCount').textContent = p.discard.length;
+  const discardBtn = document.getElementById('discardSelected');
+  discardBtn.textContent = 'Discard Selected (' + selectedCount + ')';
+  discardBtn.disabled = selectedCount === 0;
+  document.getElementById('draw1').disabled = p.deck.length === 0;
+  document.getElementById('fill3').disabled = p.deck.length === 0 || p.hand.length >= 3;
+  const drawer = document.getElementById('drawer');
+  drawer.classList.toggle('open', discardOpen);
+  const discardList = document.getElementById('discardList');
+  discardList.innerHTML = '';
+  if (p.discard.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'discardItem';
+    empty.textContent = 'No discarded cards';
+    discardList.appendChild(empty);
+  } else {
+    p.discard.forEach(function(card) {
+      const item = document.createElement('div');
+      item.className = 'discardItem';
+      item.textContent = card.title;
+      discardList.appendChild(item);
+    });
+  }
+  const hand = document.getElementById('hand');
+  hand.innerHTML = '';
+  document.getElementById('empty').style.display = p.hand.length ? 'none' : 'block';
+  p.hand.forEach(function(card) {
+    const wrap = document.createElement('div');
+    wrap.className = 'cardWrap' + (card.selected ? ' selected' : '');
+    wrap.setAttribute('role', 'button');
+    wrap.setAttribute('aria-label', 'Select ' + card.title);
+    wrap.addEventListener('click', function() { toggleCard(card.id); });
+    const img = document.createElement('img');
+    img.className = 'cardImg';
+    img.src = card.src;
+    img.alt = card.title;
+    wrap.appendChild(img);
+    hand.appendChild(wrap);
+  });
+}
+
+document.getElementById('tab1').addEventListener('click', function() { switchPlayer(1); });
+document.getElementById('tab2').addEventListener('click', function() { switchPlayer(2); });
+document.getElementById('draw1').addEventListener('click', function() { drawCards(1); });
+document.getElementById('fill3').addEventListener('click', fillHandToThree);
+document.getElementById('discardSelected').addEventListener('click', discardSelectedCards);
+document.getElementById('discardPile').addEventListener('click', toggleDiscardPile);
+document.getElementById('reset').addEventListener('click', resetDeck);
+render();
+</script>
+</body>
+</html>
