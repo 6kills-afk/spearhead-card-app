@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Spearhead Cards">
+<meta name="theme-color" content="#0c0907">
+<title>Spearhead Card Drawer v7</title>
+<style>
+:root{
+  --ink:#080706; --obsidian:#100d0a; --panel:#21170f; --panel2:#2c1f14; --panel3:#392717;
+  --bone:#f3e7c4; --muted:#c7b789; --dim:#8f7d59; --gold:#c79a38; --bright:#f0c85a;
+  --blood:#81251f; --blood2:#bd3b30; --steel:#6d7070; --green:#3f7242; --blue:#30566f;
+  --line:#574020; --shadow:rgba(0,0,0,.7);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--bone);background:var(--ink)}
+body{
+  padding:max(8px,env(safe-area-inset-top)) 8px max(16px,env(safe-area-inset-bottom));
+  background:
+    radial-gradient(circle at 14% 7%,rgba(177,52,35,.26),transparent 24%),
+    radial-gradient(circle at 83% 12%,rgba(209,150,51,.20),transparent 28%),
+    radial-gradient(circle at 50% 95%,rgba(85,92,82,.18),transparent 38%),
+    linear-gradient(135deg,rgba(255,255,255,.035) 0 1px,transparent 1px 13px),
+    linear-gradient(45deg,rgba(255,255,255,.018) 0 1px,transparent 1px 9px),
+    linear-gradient(180deg,#19110b,#070605 68%,#120b08);
+}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.62;background:
+  radial-gradient(circle at 50% 25%,transparent,rgba(0,0,0,.52) 65%),
+  repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0 1px,transparent 1px 5px),
+  repeating-linear-gradient(90deg,rgba(0,0,0,.11) 0 2px,transparent 2px 11px)}
+body:after{content:"";position:fixed;inset:auto -20% -28% -20%;height:45%;pointer-events:none;background:radial-gradient(ellipse at center,rgba(130,37,28,.30),transparent 64%);filter:blur(18px)}
+.app{position:relative;max-width:1040px;margin:0 auto}.frame{border:1px solid var(--line);box-shadow:0 18px 48px var(--shadow),inset 0 0 0 1px rgba(255,228,151,.06)}
+header{position:relative;overflow:hidden;border-radius:18px;padding:15px 14px 13px;margin-bottom:10px;background:linear-gradient(180deg,#3a2716,#17100b)}
+header:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(240,200,90,.12),transparent),radial-gradient(circle at 12% 50%,rgba(189,59,48,.22),transparent 30%)}
+header>*{position:relative}h1{margin:0 0 4px;font-size:clamp(25px,7vw,44px);line-height:.98;letter-spacing:.04em;text-transform:uppercase;text-shadow:0 3px 0 #000,0 0 22px rgba(240,200,90,.28)}
+.sub{font-size:13px;line-height:1.35;color:var(--muted)}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+button{border:1px solid #674b25;border-radius:10px;padding:12px 9px;color:var(--bone);font-size:15px;font-weight:950;letter-spacing:.02em;text-transform:uppercase;background:linear-gradient(180deg,#3c2a17,#17100a);box-shadow:inset 0 1px 0 rgba(255,244,194,.12),0 4px 14px rgba(0,0,0,.38);touch-action:manipulation;user-select:none;cursor:pointer}
+button:active{transform:scale(.985)}button:disabled{opacity:.38;transform:none}.tab.active,.primary{background:linear-gradient(180deg,#b48732,#664719);border-color:#e1b950}.green{background:linear-gradient(180deg,#4d8a50,#203c22);border-color:#75a06f}.red{background:linear-gradient(180deg,#a63128,#4b1310);border-color:#c6574e}.blue{background:linear-gradient(180deg,#416e86,#1a303d);border-color:#6b93aa}
+.panel{border-radius:18px;padding:10px;background:linear-gradient(180deg,rgba(42,30,18,.98),rgba(13,9,7,.98))}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:9px}.stat{border:1px solid #4b371d;border-radius:11px;padding:8px 5px;text-align:center;background:linear-gradient(180deg,#14100b,#0b0907)}.stat b{display:block;color:var(--bright);font-size:21px}.stat span{font-size:10px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}.section{border:1px solid #4b371d;border-radius:15px;background:rgba(7,6,5,.57);padding:9px;margin-top:10px}.sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;color:var(--bright);font-weight:1000;font-size:12px;letter-spacing:.08em;text-transform:uppercase}.sectionTitle span:last-child{color:var(--muted);font-weight:750;text-transform:none;letter-spacing:0}.ornament{height:8px;margin:4px 0 10px;background:linear-gradient(90deg,transparent,var(--blood),var(--gold),var(--blood),transparent);border-radius:999px;opacity:.8}.cardsLarge{display:flex;flex-direction:column;gap:13px}.handGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:9px}.cardWrap{position:relative;overflow:hidden;width:100%;margin:0 auto;border:1px solid #5d4525;border-radius:15px;padding:6px;background:#0b0907;box-shadow:0 14px 30px rgba(0,0,0,.62);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,opacity .12s ease}.cardWrap:before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:14px;background:linear-gradient(135deg,rgba(240,200,90,.09),transparent 24%,rgba(129,37,31,.08));z-index:1}.cardWrap.selected{outline:4px solid var(--bright);box-shadow:0 0 0 2px #000,0 0 34px rgba(240,200,90,.68)}.activeZone .cardWrap{max-width:760px}.cardImg{position:relative;z-index:0;display:block;width:100%;border-radius:10px;background:#17130e}.cardOverlay{position:absolute;z-index:3;top:9px;right:9px;padding:5px 8px;border-radius:999px;background:var(--bright);color:#111;font-size:11px;font-weight:1000;box-shadow:0 3px 12px rgba(0,0,0,.55)}.zoomBtn{position:absolute;z-index:4;top:9px;left:9px;border-radius:999px;padding:6px 9px;font-size:12px;min-width:0;background:rgba(0,0,0,.72);border-color:#8e6c2f;text-transform:none}.empty{border:1px dashed #68502b;border-radius:13px;padding:21px 8px;text-align:center;color:var(--muted);background:rgba(0,0,0,.18)}.piles{display:grid;grid-template-columns:1fr 1fr;gap:9px}.pileGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px}.pileCard{position:relative;border:1px solid #4c371d;border-radius:10px;background:#100c08;padding:4px;box-shadow:0 8px 18px rgba(0,0,0,.42)}.pileCard img{width:100%;display:block;border-radius:7px}.ribbon{position:absolute;top:5px;left:5px;right:5px;text-align:center;border-radius:999px;padding:3px 4px;font-size:9px;font-weight:1000;letter-spacing:.05em;color:#111}.ribbon.played{background:var(--bright)}.ribbon.discarded{background:#b9b0a0}.pileCard div:last-child{font-size:10px;line-height:1.12;color:var(--muted);padding-top:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.remainingList{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:7px}.remainingItem{display:flex;align-items:center;gap:7px;border:1px solid #46331a;border-radius:10px;background:#14100b;padding:6px;font-size:12px;font-weight:850;color:#edd99c}.remainingItem img{width:32px;height:46px;object-fit:cover;border-radius:4px;background:#000}.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:50;padding:12px;background:rgba(0,0,0,.88);backdrop-filter:blur(5px)}.modal.open{display:flex}.modalInner{position:relative;width:min(96vw,760px);max-height:96vh}.modalInner img{display:block;width:100%;max-height:92vh;object-fit:contain;border-radius:16px;background:#0b0907;box-shadow:0 0 0 1px #a8843d,0 26px 60px #000}.closeZoom{position:absolute;right:8px;top:8px;z-index:55;border-radius:999px;padding:9px 12px;background:rgba(0,0,0,.78);text-transform:none}.hint{margin-top:10px;text-align:center;color:var(--dim);font-size:11px;line-height:1.35}
+@media(max-width:760px){.controls{grid-template-columns:1fr 1fr}.controls button:last-child{grid-column:1/-1}.handGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.piles{grid-template-columns:1fr}.activeZone .cardWrap{max-width:96vw}}
+@media(max-width:430px){body{padding-left:6px;padding-right:6px}header,.panel{border-radius:14px}h1{font-size:24px}.sub{font-size:12px}.stats{gap:5px}.stat{padding:7px 3px}.stat b{font-size:19px}button{font-size:13px;padding:11px 6px}.section{padding:8px}.handGrid{gap:7px}.cardWrap{padding:5px;border-radius:12px}.cardImg{border-radius:8px}.zoomBtn{font-size:11px;padding:5px 7px}.piles .pileGrid{grid-template-columns:repeat(auto-fill,minmax(62px,1fr))}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="frame">
+<h1>Spearhead Card Drawer v7</h1>
+<div class="sub">Battlefield-style tracker with separate played and discarded piles. Select cards, play them to score/use them and refill to three, or discard only without drawing.</div>
+</header>
+<div class="tabs">
+<button id="tab1" class="tab active" type="button">Player 1</button>
+<button id="tab2" class="tab" type="button">Player 2</button>
+</div>
+<section class="panel frame">
+<div class="stats">
+<div class="stat"><b id="deckCount">0</b><span>Deck</span></div>
+<div class="stat"><b id="handCount">0</b><span>Hand</span></div>
+<div class="stat"><b id="playedCount">0</b><span>Played</span></div>
+<div class="stat"><b id="discardCount">0</b><span>Discarded</span></div>
+</div>
+<div class="controls">
+<button id="draw1" class="primary" type="button">Draw 1</button>
+<button id="fill3" class="primary" type="button">Fill to 3</button>
+<button id="playSelected" class="green" type="button">Play selected (0)</button>
+<button id="discardSelected" class="red" type="button">Discard only (0)</button>
+<button id="togglePiles" class="blue" type="button">Piles</button>
+<button id="toggleRemaining" type="button">Remaining</button>
+<button id="reset" class="red" type="button">Reset / Shuffle</button>
+</div>
+<div class="section activeZone">
+  <div class="sectionTitle"><span>Active tactics</span><span id="activeHelp">Tap a card in your hand to stage it here</span></div>
+  <div class="ornament"></div>
+  <div id="activeCards" class="cardsLarge"></div>
+</div>
+<div class="section">
+  <div class="sectionTitle"><span>Current hand</span><span>Tap card to select. View opens fullscreen.</span></div>
+  <div id="hand" class="handGrid"></div>
+  <div id="emptyHand" class="empty">No cards in hand. Tap <b>Fill to 3</b> to draw your starting hand.</div>
+</div>
+<div id="pilesSection" class="section" style="display:none">
+  <div class="sectionTitle"><span>Battle record</span><span>Played cards are gold, discarded cards are grey</span></div>
+  <div class="piles">
+    <div><div class="sectionTitle"><span>Played</span><span>Used/scored tactics</span></div><div id="playedGrid" class="pileGrid"></div></div>
+    <div><div class="sectionTitle"><span>Discarded</span><span>Thrown away without refill</span></div><div id="discardGrid" class="pileGrid"></div></div>
+  </div>
+</div>
+<div id="remainingSection" class="section" style="display:none">
+  <div class="sectionTitle"><span>Remaining possible draws</span><span>Cards still in the deck</span></div>
+  <div id="remainingList" class="remainingList"></div>
+</div>
+<div class="hint">Replace only <b>index.html</b>. Keep your existing <b>cards/</b> folder unchanged. If Safari shows an old version, reload with <b>?v=7</b>.</div>
+</section>
+</div>
+<div id="modal" class="modal" aria-hidden="true"><div class="modalInner"><button id="closeZoom" class="closeZoom" type="button">Close</button><img id="zoomImg" alt="Zoomed card"></div></div>
+<script>
+'use strict';
+const bundledCards=[{"title":"Take the Flanks","src":"cards/01-take-the-flanks.png"},{"title":"Take What's Theirs","src":"cards/02-take-what-s-theirs.png"},{"title":"Comb the Area","src":"cards/03-comb-the-area.png"},{"title":"Cut Off the Head","src":"cards/04-cut-off-the-head.png"},{"title":"Dais of the Comet","src":"cards/05-dais-of-the-comet.png"},{"title":"Dais of the Hammer","src":"cards/06-dais-of-the-hammer.png"},{"title":"Hold the Centre","src":"cards/07-hold-the-centre.png"},{"title":"Material Gains","src":"cards/08-material-gains.png"},{"title":"Protect the Loot","src":"cards/09-protect-the-loot.png"},{"title":"Raid","src":"cards/10-raid.png"},{"title":"Raze","src":"cards/11-raze.png"},{"title":"Pitiless Murder","src":"cards/12-pitiless-murder.png"}];
+const storageKey='spearhead-card-app-v7';
+let activePlayer=1;let pilesOpen=true;let remainingOpen=false;
+function makeId(){return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)}
+function cleanCard(card){return{title:card.title,src:card.src,id:makeId(),selected:false}}
+function cloneDeck(){return bundledCards.map(cleanCard)}
+function shuffle(input){const a=input.slice();for(let i=a.length-1;i>0;i-=1){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
+function freshPlayer(){return{deck:shuffle(cloneDeck()),hand:[],played:[],discarded:[]}}
+function freshState(){return{players:{'1':freshPlayer(),'2':freshPlayer()}}}
+function normalisePlayer(p){if(!p||!Array.isArray(p.deck)||!Array.isArray(p.hand))return freshPlayer();if(!Array.isArray(p.played))p.played=[];if(!Array.isArray(p.discarded))p.discarded=[];p.deck.forEach(c=>c.selected=false);p.played=p.played.map(e=>e.card?e:{card:e,type:'played'});p.discarded=p.discarded.map(e=>e.card?e:{card:e,type:'discarded'});return p}
+function loadState(){try{const raw=localStorage.getItem(storageKey);if(!raw)return freshState();const parsed=JSON.parse(raw);if(!parsed.players)return freshState();parsed.players['1']=normalisePlayer(parsed.players['1']);parsed.players['2']=normalisePlayer(parsed.players['2']);return parsed}catch(e){return freshState()}}
+let state=loadState();
+function saveState(){try{localStorage.setItem(storageKey,JSON.stringify(state))}catch(e){}}
+function currentPlayer(){return state.players[String(activePlayer)]}
+function switchPlayer(n){activePlayer=n;document.getElementById('tab1').classList.toggle('active',n===1);document.getElementById('tab2').classList.toggle('active',n===2);render()}
+function drawCards(n){const p=currentPlayer();const amount=Math.max(0,Math.min(n,p.deck.length));for(let i=0;i<amount;i++){const card=p.deck.shift();card.selected=false;p.hand.push(card)}saveState();render()}
+function fillToThree(){const p=currentPlayer();drawCards(Math.max(0,3-p.hand.length))}
+function selectedIds(){return currentPlayer().hand.filter(c=>c.selected).map(c=>c.id)}
+function removeSelectedFromHand(){const p=currentPlayer();const ids=new Set(selectedIds());const moved=[];p.hand=p.hand.filter(card=>{if(ids.has(card.id)){card.selected=false;moved.push(card);return false}return true});return moved}
+function playSelected(){const p=currentPlayer();const moved=removeSelectedFromHand();if(moved.length){moved.forEach(card=>p.played.unshift({card:card,type:'played',at:Date.now()}));const missing=Math.max(0,3-p.hand.length);const amount=Math.max(0,Math.min(missing,p.deck.length));for(let i=0;i<amount;i++){const card=p.deck.shift();card.selected=false;p.hand.push(card)}saveState()}render()}
+function discardOnly(){const p=currentPlayer();const moved=removeSelectedFromHand();if(moved.length){moved.forEach(card=>p.discarded.unshift({card:card,type:'discarded',at:Date.now()}));saveState()}render()}
+function resetDeck(){state.players[String(activePlayer)]=freshPlayer();saveState();render()}
+function toggleCard(id){const p=currentPlayer();p.hand.forEach(card=>{if(card.id===id)card.selected=!card.selected});saveState();render()}
+function openZoom(card){const modal=document.getElementById('modal');const img=document.getElementById('zoomImg');img.src=card.src;img.alt=card.title;modal.classList.add('open');modal.setAttribute('aria-hidden','false')}
+function closeZoom(){const modal=document.getElementById('modal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.getElementById('zoomImg').removeAttribute('src')}
+function cardElement(card){const wrap=document.createElement('div');wrap.className='cardWrap'+(card.selected?' selected':'');wrap.setAttribute('role','button');wrap.setAttribute('aria-label','Select '+card.title);wrap.addEventListener('click',()=>toggleCard(card.id));if(card.selected){const badge=document.createElement('div');badge.className='cardOverlay';badge.textContent='STAGED';wrap.appendChild(badge)}const zoom=document.createElement('button');zoom.className='zoomBtn';zoom.type='button';zoom.textContent='View';zoom.addEventListener('click',ev=>{ev.stopPropagation();openZoom(card)});wrap.appendChild(zoom);const img=document.createElement('img');img.className='cardImg';img.src=card.src;img.alt=card.title;wrap.appendChild(img);return wrap}
+function pileElement(entry,type){const card=entry.card||entry;const item=document.createElement('div');item.className='pileCard';item.addEventListener('click',()=>openZoom(card));const rib=document.createElement('div');rib.className='ribbon '+type;rib.textContent=type==='played'?'PLAYED':'DISCARDED';item.appendChild(rib);const img=document.createElement('img');img.src=card.src;img.alt=card.title;const label=document.createElement('div');label.textContent=card.title;item.appendChild(img);item.appendChild(label);return item}
+function render(){const p=currentPlayer();const selected=p.hand.filter(c=>c.selected);const unselected=p.hand.filter(c=>!c.selected);document.getElementById('deckCount').textContent=p.deck.length;document.getElementById('handCount').textContent=p.hand.length;document.getElementById('playedCount').textContent=p.played.length;document.getElementById('discardCount').textContent=p.discarded.length;document.getElementById('playSelected').textContent='Play selected ('+selected.length+')';document.getElementById('discardSelected').textContent='Discard only ('+selected.length+')';document.getElementById('playSelected').disabled=selected.length===0;document.getElementById('discardSelected').disabled=selected.length===0;document.getElementById('draw1').disabled=p.deck.length===0;document.getElementById('fill3').disabled=p.deck.length===0||p.hand.length>=3;document.getElementById('activeHelp').textContent=selected.length?'Ready to play or discard':'Tap a card in your hand to stage it here';const active=document.getElementById('activeCards');active.innerHTML='';if(selected.length===0){const e=document.createElement('div');e.className='empty';e.textContent='No active tactic selected.';active.appendChild(e)}else selected.forEach(c=>active.appendChild(cardElement(c)));const hand=document.getElementById('hand');hand.innerHTML='';document.getElementById('emptyHand').style.display=p.hand.length?'none':'block';unselected.forEach(c=>hand.appendChild(cardElement(c)));document.getElementById('pilesSection').style.display=pilesOpen?'block':'none';const played=document.getElementById('playedGrid');played.innerHTML='';if(p.played.length===0){const e=document.createElement('div');e.className='empty';e.textContent='No played cards.';played.appendChild(e)}else p.played.forEach(e=>played.appendChild(pileElement(e,'played')));const discarded=document.getElementById('discardGrid');discarded.innerHTML='';if(p.discarded.length===0){const e=document.createElement('div');e.className='empty';e.textContent='No discarded-only cards.';discarded.appendChild(e)}else p.discarded.forEach(e=>discarded.appendChild(pileElement(e,'discarded')));document.getElementById('remainingSection').style.display=remainingOpen?'block':'none';const remaining=document.getElementById('remainingList');remaining.innerHTML='';if(p.deck.length===0){const e=document.createElement('div');e.className='empty';e.textContent='No cards left in the deck.';remaining.appendChild(e)}else p.deck.forEach(card=>{const item=document.createElement('div');item.className='remainingItem';item.addEventListener('click',()=>openZoom(card));const img=document.createElement('img');img.src=card.src;img.alt='';const label=document.createElement('span');label.textContent=card.title;item.appendChild(img);item.appendChild(label);remaining.appendChild(item)})}
+document.getElementById('tab1').addEventListener('click',()=>switchPlayer(1));document.getElementById('tab2').addEventListener('click',()=>switchPlayer(2));document.getElementById('draw1').addEventListener('click',()=>drawCards(1));document.getElementById('fill3').addEventListener('click',fillToThree);document.getElementById('playSelected').addEventListener('click',playSelected);document.getElementById('discardSelected').addEventListener('click',discardOnly);document.getElementById('togglePiles').addEventListener('click',()=>{pilesOpen=!pilesOpen;render()});document.getElementById('toggleRemaining').addEventListener('click',()=>{remainingOpen=!remainingOpen;render()});document.getElementById('reset').addEventListener('click',resetDeck);document.getElementById('closeZoom').addEventListener('click',closeZoom);document.getElementById('modal').addEventListener('click',ev=>{if(ev.target.id==='modal')closeZoom()});document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeZoom()});render();
+</script>
+</body>
+</html>
