@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Spearhead Cards">
+<meta name="theme-color" content="#0b0907">
+<title>Spearhead Card Drawer</title>
+<style>
+:root{
+  --black:#060504; --charcoal:#100d0a; --stone:#211a14; --stone2:#2f261d; --iron:#59564c;
+  --bone:#efe2bd; --muted:#bba982; --dim:#7f6f51; --brass:#b88b35; --brass2:#d2aa55;
+  --blood:#72221d; --wax:#8d2922; --green:#3e6842; --blue:#364e5d; --line:#523d24;
+  --shadow:rgba(0,0,0,.72);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--bone);background:var(--black)}
+body{
+  padding:max(8px,env(safe-area-inset-top)) 7px max(16px,env(safe-area-inset-bottom));
+  background:
+    radial-gradient(circle at 20% 5%,rgba(171,53,38,.20),transparent 24%),
+    radial-gradient(circle at 84% 13%,rgba(190,135,52,.18),transparent 30%),
+    radial-gradient(circle at 55% 92%,rgba(64,70,63,.22),transparent 42%),
+    linear-gradient(135deg,rgba(255,255,255,.025) 0 1px,transparent 1px 12px),
+    linear-gradient(45deg,rgba(0,0,0,.22) 0 2px,transparent 2px 14px),
+    linear-gradient(180deg,#18120d,#060504 62%,#120a08);
+}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.75;background:
+  radial-gradient(circle at 50% 30%,transparent,rgba(0,0,0,.58) 68%),
+  repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 5px),
+  repeating-linear-gradient(90deg,rgba(0,0,0,.13) 0 2px,transparent 2px 10px)}
+.app{position:relative;max-width:1040px;margin:0 auto}.frame{border:1px solid var(--line);box-shadow:0 18px 50px var(--shadow),inset 0 0 0 1px rgba(255,229,161,.045)}
+header{position:relative;overflow:visible;border-radius:17px;padding:14px;margin-bottom:9px;background:linear-gradient(180deg,#342819,#15100b)}
+header:before{content:"";position:absolute;inset:0;border-radius:17px;background:linear-gradient(90deg,transparent,rgba(210,170,85,.11),transparent),radial-gradient(circle at 12% 35%,rgba(114,34,29,.28),transparent 34%)}
+.headerRow{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px}h1{margin:0;font-size:clamp(24px,7vw,42px);line-height:.98;letter-spacing:.045em;text-transform:uppercase;text-shadow:0 3px 0 #000,0 0 18px rgba(210,170,85,.22)}
+.infoBtn{position:relative;flex:0 0 auto;width:38px;height:38px;border-radius:999px;padding:0;font-size:22px;line-height:1;background:linear-gradient(180deg,#5e4625,#21170d);border-color:#d2aa55;color:#fff2bd;text-transform:none;z-index:4}
+.helpBubble{position:absolute;right:2px;top:48px;z-index:8;max-width:230px;padding:11px 12px;border:1px solid var(--brass2);border-radius:13px;background:linear-gradient(180deg,#2d2115,#110c08);color:var(--bone);font-size:12px;line-height:1.3;box-shadow:0 12px 34px rgba(0,0,0,.72)}
+.helpBubble:before{content:"";position:absolute;right:14px;top:-8px;width:14px;height:14px;background:#2d2115;border-left:1px solid var(--brass2);border-top:1px solid var(--brass2);transform:rotate(45deg)}
+.helpBubble b{color:var(--brass2)}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px}
+button{border:1px solid #634a2a;border-radius:10px;padding:11px 7px;color:var(--bone);font-size:13px;font-weight:950;letter-spacing:.025em;text-transform:uppercase;background:linear-gradient(180deg,#3b2d1b,#15100a);box-shadow:inset 0 1px 0 rgba(255,240,194,.10),0 4px 14px rgba(0,0,0,.42);touch-action:manipulation;user-select:none;cursor:pointer}
+button:active{transform:scale(.985)}button:disabled{opacity:.36;transform:none}.tab.active,.primary{background:linear-gradient(180deg,#a77b2d,#5a4019);border-color:#caa24b}.green{background:linear-gradient(180deg,#4d7e4e,#203a22);border-color:#719a69}.red{background:linear-gradient(180deg,#943028,#4b1411);border-color:#b74b41}.blue{background:linear-gradient(180deg,#415b69,#172b35);border-color:#698b9d}.scoreBtn{background:linear-gradient(180deg,#bc923d,#6d4b16);border-color:#e0b65a;color:#fff4c9}.smallBtn{padding:7px 9px;font-size:11px;border-radius:999px;text-transform:uppercase;white-space:nowrap}
+.panel{border-radius:17px;padding:10px;background:linear-gradient(180deg,rgba(43,33,23,.96),rgba(12,9,7,.98))}.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-bottom:9px}.stat{border:1px solid #493621;border-radius:10px;padding:8px 2px;text-align:center;background:linear-gradient(180deg,#15110c,#0b0907)}.stat b{display:block;color:var(--brass2);font-size:18px}.stat span{font-size:8.5px;color:var(--muted);letter-spacing:.03em;text-transform:uppercase}.controls{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:9px}.section{border:1px solid #4d3a22;border-radius:15px;background:rgba(7,6,5,.56);padding:9px;margin-top:9px}.sectionTitle{display:flex;align-items:flex-start;justify-content:space-between;gap:9px;margin-bottom:8px;color:#e7c568;font-weight:1000;font-size:12px;letter-spacing:.09em;text-transform:uppercase}.sectionTitle span:last-child{color:var(--muted);font-weight:780;text-transform:none;letter-spacing:0;text-align:right}.sectionTitleActions{display:flex;align-items:center;gap:7px;color:var(--muted);font-weight:780;text-transform:none;letter-spacing:0;text-align:right}.divider{height:8px;margin:4px 0 10px;background:linear-gradient(90deg,transparent,var(--blood),var(--brass),var(--blood),transparent);border-radius:999px;opacity:.72}
+.activeCards{display:flex;flex-direction:column;gap:12px}.activeZone .cardWrap{max-width:min(98vw,780px)}.handRail{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 8px;overscroll-behavior-x:contain}.handRail::-webkit-scrollbar{height:0}.handRail .cardWrap{flex:0 0 82%;max-width:430px;scroll-snap-align:center}@media(min-width:760px){.handRail .cardWrap{flex-basis:31%}}
+.cardWrap{position:relative;overflow:hidden;width:100%;margin:0 auto;border:1px solid #594326;border-radius:15px;padding:6px;background:#0b0907;box-shadow:0 14px 30px rgba(0,0,0,.62);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,opacity .12s ease}.cardWrap:before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:14px;background:linear-gradient(135deg,rgba(210,170,85,.07),transparent 25%,rgba(114,34,29,.07));z-index:1}.cardWrap.staged{outline:4px solid var(--brass2);box-shadow:0 0 0 2px #000,0 0 24px rgba(210,170,85,.45)}.cardImg{position:relative;z-index:0;display:block;width:100%;border-radius:10px;background:#19140e}.stamp{position:absolute;z-index:3;top:9px;right:9px;padding:5px 8px;border-radius:999px;background:var(--brass2);color:#111;font-size:11px;font-weight:1000;box-shadow:0 3px 12px rgba(0,0,0,.55)}.zoomBtn{position:absolute;z-index:4;top:9px;left:9px;border-radius:999px;padding:6px 9px;font-size:12px;min-width:0;background:rgba(0,0,0,.74);border-color:#866633;text-transform:none}.empty{border:1px dashed #67502e;border-radius:13px;padding:20px 9px;text-align:center;color:var(--muted);background:rgba(0,0,0,.18)}.piles{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.pileGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:8px}.pileCard{position:relative;border:1px solid #4a371f;border-radius:10px;background:#100c08;padding:4px;box-shadow:0 8px 18px rgba(0,0,0,.42)}.pileCard img{width:100%;display:block;border-radius:7px;filter:saturate(.92)}.ribbon{position:absolute;top:5px;left:5px;right:5px;text-align:center;border-radius:999px;padding:3px 4px;font-size:9px;font-weight:1000;letter-spacing:.05em;color:#111}.ribbon.played{background:#8fb0c1}.ribbon.scored{background:var(--brass2)}.ribbon.discarded{background:#b8b1a3}.pileCard div:last-child{font-size:10px;line-height:1.12;color:var(--muted);padding-top:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.remainingList{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:7px}.remainingItem{display:flex;align-items:center;gap:7px;border:1px solid #46331d;border-radius:10px;background:#14100b;padding:6px;font-size:12px;font-weight:850;color:#ead69a}.remainingItem img{width:32px;height:46px;object-fit:cover;border-radius:4px;background:#000}.bottomToggles{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:50;padding:12px;background:rgba(0,0,0,.88);backdrop-filter:blur(5px)}.modal.open{display:flex}.modalInner{position:relative;width:min(96vw,760px);max-height:96vh}.modalInner img{display:block;width:100%;max-height:92vh;object-fit:contain;border-radius:16px;background:#0b0907;box-shadow:0 0 0 1px #a8843d,0 26px 60px #000}.guideBox{width:min(94vw,680px);max-height:86vh;overflow:auto;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#2b2116,#100b08);box-shadow:0 20px 55px #000;padding:16px}.guideBox h2{margin:0 0 10px;color:var(--brass2);text-transform:uppercase;letter-spacing:.04em}.guideBox h3{margin:16px 0 6px;color:#e7c568}.guideBox p,.guideBox li{color:var(--bone);font-size:14px;line-height:1.45}.guideBox ul{padding-left:20px}.guideClose,.closeZoom{position:absolute;right:8px;top:8px;z-index:55;border-radius:999px;padding:9px 12px;background:rgba(0,0,0,.78);text-transform:none}.hint{margin-top:10px;text-align:center;color:var(--dim);font-size:11px;line-height:1.35}
+@media(max-width:820px){.piles{grid-template-columns:1fr}.activeZone .cardWrap{max-width:96vw}}
+@media(max-width:430px){body{padding-left:6px;padding-right:6px}header,.panel{border-radius:14px}h1{font-size:22px}.stats{gap:4px}.stat{padding:7px 1px}.stat b{font-size:17px}.stat span{font-size:7.8px}button{font-size:11.5px;padding:10px 5px}.section{padding:8px}.handRail .cardWrap{flex-basis:84%}.cardWrap{padding:5px;border-radius:12px}.cardImg{border-radius:8px}.zoomBtn{font-size:11px;padding:5px 7px}.pileGrid{grid-template-columns:repeat(auto-fill,minmax(64px,1fr))}.helpBubble{right:0;max-width:210px}.bottomToggles{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="frame">
+  <div class="headerRow">
+    <h1>Spearhead Card Drawer</h1>
+    <button id="infoBtn" class="infoBtn" type="button" aria-label="Open help">i</button>
+    <div id="helpBubble" class="helpBubble" style="display:none"><b>New?</b><br>Tap the info button for the full guide. Tap this bubble to close it.</div>
+  </div>
+</header>
+<div class="tabs">
+<button id="tab1" class="tab active" type="button">Player 1</button>
+<button id="tab2" class="tab" type="button">Player 2</button>
+</div>
+<section class="panel frame">
+<div class="stats">
+<div class="stat"><b id="deckCount">0</b><span>Deck</span></div>
+<div class="stat"><b id="handCount">0</b><span>Hand</span></div>
+<div class="stat"><b id="playedCount">0</b><span>Played</span></div>
+<div class="stat"><b id="scoredCount">0</b><span>Scored</span></div>
+<div class="stat"><b id="discardCount">0</b><span>Discard</span></div>
+</div>
+<div class="controls">
+<button id="fill3" class="primary" type="button">Draw to 3</button>
+<button id="playStaged" class="blue" type="button">Play command (0)</button>
+<button id="scoreStaged" class="scoreBtn" type="button">Score tactic (0)</button>
+<button id="discardStaged" class="red" type="button">Discard (0)</button>
+<button id="reset" class="red" type="button">Reset / Shuffle</button>
+</div>
+<div class="section activeZone">
+  <div class="sectionTitle"><span>Staged tactic</span><span id="activeHelp">Tap a hand card to stage</span></div>
+  <div class="divider"></div>
+  <div id="activeCards" class="activeCards"></div>
+</div>
+<div class="section">
+  <div class="sectionTitle"><span>Current hand</span><span>Max 3 cards</span></div>
+  <div id="hand" class="handRail"></div>
+  <div id="emptyHand" class="empty">No cards in hand. Tap <b>Draw to 3</b> to draw your starting hand.</div>
+</div>
+<div id="pilesSection" class="section">
+  <div class="sectionTitle"><span>Battle record</span><div class="sectionTitleActions"><span>Played, scored, discarded</span><button id="hidePiles" class="smallBtn" type="button">Hide</button></div></div>
+  <div class="piles">
+    <div><div class="sectionTitle"><span>Played</span><span>Command used</span></div><div id="playedGrid" class="pileGrid"></div></div>
+    <div><div class="sectionTitle"><span>Scored</span><span>Objective completed</span></div><div id="scoredGrid" class="pileGrid"></div></div>
+    <div><div class="sectionTitle"><span>Discarded</span><span>Thrown away</span></div><div id="discardGrid" class="pileGrid"></div></div>
+  </div>
+</div>
+<div id="remainingSection" class="section" style="display:none">
+  <div class="sectionTitle"><span>Remaining possible draws</span><div class="sectionTitleActions"><span>Cards still in the deck</span><button id="hideRemaining" class="smallBtn" type="button">Hide</button></div></div>
+  <div id="remainingList" class="remainingList"></div>
+</div>
+<div class="bottomToggles">
+  <button id="showPiles" class="green" type="button" style="display:none">Show piles</button>
+  <button id="showRemaining" type="button">Show remaining</button>
+</div>
+<div class="hint">Upload this file as exactly <b>index.html</b>. If Safari keeps the old file, open your site with <b>?v=10</b>.</div>
+</section>
+</div>
+<div id="modal" class="modal" aria-hidden="true"><div class="modalInner"><button id="closeZoom" class="closeZoom" type="button">Close</button><img id="zoomImg" alt="Zoomed card"></div></div>
+<div id="guideModal" class="modal" aria-hidden="true"><div class="guideBox"><button id="closeGuide" class="guideClose" type="button">Close</button><h2>How to use Spearhead Card Drawer</h2><p>This app is a simple battle tactic tracker for two players. Each player has a separate deck, hand, and battle record.</p><h3>Basic flow</h3><ul><li>Use <b>Draw to 3</b> whenever you are allowed to draw cards. The app never lets your hand go above three cards.</li><li>Tap a card in your hand to move it to <b>Staged tactic</b>.</li><li>With a staged card, choose one of three outcomes: <b>Play command</b>, <b>Score tactic</b>, or <b>Discard</b>.</li><li>Each outcome removes the card from your hand and places it in the matching pile.</li></ul><h3>What the piles mean</h3><ul><li><b>Played</b> means the command/ability on the card was used.</li><li><b>Scored</b> means the battle tactic objective was completed for victory points.</li><li><b>Discarded</b> means the card was thrown away without being scored or used.</li></ul><h3>Useful controls</h3><ul><li>Tap <b>View</b> on any card to open it fullscreen.</li><li>Use <b>Show remaining</b> to check which cards are still in the deck.</li><li>Use <b>Hide</b> on piles or remaining cards to save screen space.</li><li><b>Reset / Shuffle</b> resets only the currently selected player.</li></ul></div></div>
+<script>
+'use strict';
+const bundledCards=[{"title":"Take the Flanks","src":"cards/01-take-the-flanks.png"},{"title":"Take What's Theirs","src":"cards/02-take-what-s-theirs.png"},{"title":"Comb the Area","src":"cards/03-comb-the-area.png"},{"title":"Cut Off the Head","src":"cards/04-cut-off-the-head.png"},{"title":"Dais of the Comet","src":"cards/05-dais-of-the-comet.png"},{"title":"Dais of the Hammer","src":"cards/06-dais-of-the-hammer.png"},{"title":"Hold the Centre","src":"cards/07-hold-the-centre.png"},{"title":"Material Gains","src":"cards/08-material-gains.png"},{"title":"Protect the Loot","src":"cards/09-protect-the-loot.png"},{"title":"Raid","src":"cards/10-raid.png"},{"title":"Raze","src":"cards/11-raze.png"},{"title":"Pitiless Murder","src":"cards/12-pitiless-murder.png"}];
+const storageKey='spearhead-card-app-v10-clean-state';
+const helpSeenKey='spearhead-card-app-v10-help-seen';
+let activePlayer=1;let pilesOpen=true;let remainingOpen=false;
+function makeId(){return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)}
+function freshCard(card){return{title:card.title,src:card.src,id:makeId()}}
+function cloneDeck(){return bundledCards.map(freshCard)}
+function shuffle(input){const a=input.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t}return a}
+function freshPlayer(){return{deck:shuffle(cloneDeck()),hand:[],played:[],scored:[],discarded:[],stagedIds:[]}}
+function freshState(){return{players:{'1':freshPlayer(),'2':freshPlayer()}}}
+function normaliseCard(card){return{title:card.title,src:card.src,id:card.id||makeId()}}
+function normalisePileEntry(entry){const source=entry.card||entry;return{card:normaliseCard(source),at:entry.at||Date.now()}}
+function normalisePlayer(p){if(!p||!Array.isArray(p.deck)||!Array.isArray(p.hand))return freshPlayer();if(!Array.isArray(p.played))p.played=[];if(!Array.isArray(p.scored))p.scored=[];if(!Array.isArray(p.discarded))p.discarded=[];if(!Array.isArray(p.stagedIds))p.stagedIds=[];p.deck=p.deck.map(normaliseCard);p.hand=p.hand.map(normaliseCard);while(p.hand.length>3){p.deck.unshift(p.hand.pop())}p.played=p.played.map(normalisePileEntry);p.scored=p.scored.map(normalisePileEntry);p.discarded=p.discarded.map(normalisePileEntry);const handIds=new Set(p.hand.map(c=>c.id));p.stagedIds=p.stagedIds.filter(id=>handIds.has(id));return p}
+function loadState(){try{const raw=localStorage.getItem(storageKey);if(!raw)return freshState();const parsed=JSON.parse(raw);if(!parsed.players)return freshState();parsed.players['1']=normalisePlayer(parsed.players['1']);parsed.players['2']=normalisePlayer(parsed.players['2']);return parsed}catch(e){return freshState()}}
+let state=loadState();
+function saveState(){try{localStorage.setItem(storageKey,JSON.stringify(state))}catch(e){}}
+function currentPlayer(){return state.players[String(activePlayer)]}
+function switchPlayer(n){activePlayer=n;document.getElementById('tab1').classList.toggle('active',n===1);document.getElementById('tab2').classList.toggle('active',n===2);render()}
+function drawToThree(){const p=currentPlayer();const space=Math.max(0,3-p.hand.length);const amount=Math.max(0,Math.min(space,p.deck.length));for(let i=0;i<amount;i++)p.hand.push(p.deck.shift());saveState();render()}
+function toggleStage(id){const p=currentPlayer();const handIds=new Set(p.hand.map(c=>c.id));if(!handIds.has(id))return;const staged=new Set(p.stagedIds);if(staged.has(id))staged.delete(id);else staged.add(id);p.stagedIds=Array.from(staged).filter(x=>handIds.has(x));saveState();render()}
+function resolveStaged(destination){const p=currentPlayer();const staged=new Set(p.stagedIds);if(staged.size===0)return;const moved=[];const kept=[];for(const card of p.hand){if(staged.has(card.id))moved.push(card);else kept.push(card)}p.hand=kept.slice(0,3);p.stagedIds=[];for(const card of moved){p[destination].unshift({card:card,at:Date.now()})}saveState();render()}
+function resetDeck(){state.players[String(activePlayer)]=freshPlayer();saveState();render()}
+function openZoom(card){const modal=document.getElementById('modal');const img=document.getElementById('zoomImg');img.src=card.src;img.alt=card.title;modal.classList.add('open');modal.setAttribute('aria-hidden','false')}
+function closeZoom(){const modal=document.getElementById('modal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.getElementById('zoomImg').removeAttribute('src')}
+function openGuide(){const modal=document.getElementById('guideModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');hideHelpBubble()}
+function closeGuide(){const modal=document.getElementById('guideModal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true')}
+function hideHelpBubble(){const b=document.getElementById('helpBubble');b.style.display='none';try{localStorage.setItem(helpSeenKey,'true')}catch(e){}}
+function maybeShowHelpBubble(){try{if(localStorage.getItem(helpSeenKey)==='true')return}catch(e){}document.getElementById('helpBubble').style.display='block'}
+function cardElement(card,staged){const wrap=document.createElement('div');wrap.className='cardWrap'+(staged?' staged':'');wrap.setAttribute('role','button');wrap.setAttribute('aria-label','Stage '+card.title);wrap.addEventListener('click',()=>toggleStage(card.id));if(staged){const badge=document.createElement('div');badge.className='stamp';badge.textContent='STAGED';wrap.appendChild(badge)}const zoom=document.createElement('button');zoom.className='zoomBtn';zoom.type='button';zoom.textContent='View';zoom.addEventListener('click',ev=>{ev.stopPropagation();openZoom(card)});wrap.appendChild(zoom);const img=document.createElement('img');img.className='cardImg';img.src=card.src;img.alt=card.title;wrap.appendChild(img);return wrap}
+function pileElement(entry,type){const card=entry.card;const item=document.createElement('div');item.className='pileCard';item.addEventListener('click',()=>openZoom(card));const rib=document.createElement('div');rib.className='ribbon '+type;rib.textContent=type.toUpperCase();item.appendChild(rib);const img=document.createElement('img');img.src=card.src;img.alt=card.title;const label=document.createElement('div');label.textContent=card.title;item.appendChild(img);item.appendChild(label);return item}
+function renderPile(id,pile,type,emptyText){const node=document.getElementById(id);node.innerHTML='';if(pile.length===0){const e=document.createElement('div');e.className='empty';e.textContent=emptyText;node.appendChild(e)}else pile.forEach(entry=>node.appendChild(pileElement(entry,type)))}
+function render(){const p=currentPlayer();if(p.hand.length>3){p.hand=p.hand.slice(0,3);saveState()}const stagedSet=new Set(p.stagedIds);const stagedCards=p.hand.filter(c=>stagedSet.has(c.id));const visibleHand=p.hand.filter(c=>!stagedSet.has(c.id));document.getElementById('deckCount').textContent=p.deck.length;document.getElementById('handCount').textContent=p.hand.length;document.getElementById('playedCount').textContent=p.played.length;document.getElementById('scoredCount').textContent=p.scored.length;document.getElementById('discardCount').textContent=p.discarded.length;document.getElementById('playStaged').textContent='Play command ('+stagedCards.length+')';document.getElementById('scoreStaged').textContent='Score tactic ('+stagedCards.length+')';document.getElementById('discardStaged').textContent='Discard ('+stagedCards.length+')';document.getElementById('playStaged').disabled=stagedCards.length===0;document.getElementById('scoreStaged').disabled=stagedCards.length===0;document.getElementById('discardStaged').disabled=stagedCards.length===0;document.getElementById('fill3').disabled=p.deck.length===0||p.hand.length>=3;document.getElementById('activeHelp').textContent=stagedCards.length?'Choose an outcome':'Tap a hand card to stage';const active=document.getElementById('activeCards');active.innerHTML='';if(stagedCards.length===0){const e=document.createElement('div');e.className='empty';e.textContent='No staged tactic.';active.appendChild(e)}else stagedCards.forEach(c=>active.appendChild(cardElement(c,true)));const hand=document.getElementById('hand');hand.innerHTML='';document.getElementById('emptyHand').style.display=p.hand.length?'none':'block';if(visibleHand.length===0&&p.hand.length>0){const e=document.createElement('div');e.className='empty';e.textContent='All cards in hand are currently staged.';hand.appendChild(e)}else visibleHand.forEach(c=>hand.appendChild(cardElement(c,false)));document.getElementById('pilesSection').style.display=pilesOpen?'block':'none';document.getElementById('showPiles').style.display=pilesOpen?'none':'block';renderPile('playedGrid',p.played,'played','No played commands.');renderPile('scoredGrid',p.scored,'scored','No scored tactics.');renderPile('discardGrid',p.discarded,'discarded','No discarded cards.');document.getElementById('remainingSection').style.display=remainingOpen?'block':'none';document.getElementById('showRemaining').style.display=remainingOpen?'none':'block';const remaining=document.getElementById('remainingList');remaining.innerHTML='';if(p.deck.length===0){const e=document.createElement('div');e.className='empty';e.textContent='No cards left in the deck.';remaining.appendChild(e)}else p.deck.forEach(card=>{const item=document.createElement('div');item.className='remainingItem';item.addEventListener('click',()=>openZoom(card));const img=document.createElement('img');img.src=card.src;img.alt='';const label=document.createElement('span');label.textContent=card.title;item.appendChild(img);item.appendChild(label);remaining.appendChild(item)})}
+document.getElementById('tab1').addEventListener('click',()=>switchPlayer(1));document.getElementById('tab2').addEventListener('click',()=>switchPlayer(2));document.getElementById('fill3').addEventListener('click',drawToThree);document.getElementById('playStaged').addEventListener('click',()=>resolveStaged('played'));document.getElementById('scoreStaged').addEventListener('click',()=>resolveStaged('scored'));document.getElementById('discardStaged').addEventListener('click',()=>resolveStaged('discarded'));document.getElementById('reset').addEventListener('click',resetDeck);document.getElementById('hidePiles').addEventListener('click',()=>{pilesOpen=false;render()});document.getElementById('showPiles').addEventListener('click',()=>{pilesOpen=true;render()});document.getElementById('hideRemaining').addEventListener('click',()=>{remainingOpen=false;render()});document.getElementById('showRemaining').addEventListener('click',()=>{remainingOpen=true;render()});document.getElementById('closeZoom').addEventListener('click',closeZoom);document.getElementById('modal').addEventListener('click',ev=>{if(ev.target.id==='modal')closeZoom()});document.getElementById('infoBtn').addEventListener('click',openGuide);document.getElementById('closeGuide').addEventListener('click',closeGuide);document.getElementById('guideModal').addEventListener('click',ev=>{if(ev.target.id==='guideModal')closeGuide()});document.getElementById('helpBubble').addEventListener('click',hideHelpBubble);document.addEventListener('keydown',ev=>{if(ev.key==='Escape'){closeZoom();closeGuide()}});render();maybeShowHelpBubble();
+</script>
+</body>
+</html>
